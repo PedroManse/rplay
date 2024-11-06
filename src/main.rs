@@ -1,12 +1,20 @@
 use rplay::*;
 
-#[tokio::main(flavor = "current_thread")]
+#[derive(Debug, serde::Deserialize)]
+struct Video {
+    name: String,
+    id: String,
+    by: String,
+}
+
+#[tokio::main]
 async fn main() -> Result<(), Error> {
     dotenvy::dotenv()?;
-    let videos = query("Way down hades town").await?;
-    println!("Videos found:");
-    for video in videos {
-        println!("{} - {} @ https://youtube.com/watch?v={}", video.name, video.by, video.id);
+    let videos: Vec<Video> = serde_json::from_str(include_str!("../ids.json"))?;
+    let mut done = 0;
+    let total = videos.len();
+    for video in videos.into_iter().skip(done) {
+        print!("{} ", video.id);
     }
     Ok(())
 }
