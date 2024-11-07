@@ -1,0 +1,58 @@
+19, "./videos/Destructo Disk - ＂Death Pact＂ [OFFICIAL MUSIC VIDEO] - Sockhead Records.opus" || Death Pact [OFFICIAL MUSIC VIDEO] - Sockhead Records.opus
+4, "./videos/Coro Fonola Band - Bella Ciao - Loewenbach Fiul.m4a" || Coro Fonola Band - Bella Ciao - Loewenbach Fiul.opus
+4, "./videos/Far From Alaska + Scalene - Relentless Game (Official Recording Session) - Far From Alaska.m4a" || Far From Alaska + Scalene - Relentless Game (Official Recording Session) - Far From Alaska.opus
+4, "./videos/Gritando HC - Quero Ser Punk Com Você. - PELAOSTRONG.m4a" || Gritando HC - Quero Ser Punk Com Você. - PELAOSTRONG.opus
+4, "./videos/Gritando HC - Ande de Skate e Destrua - PunkdoBrasil.m4a" || Gritando HC - Ande de Skate e Destrua - PunkdoBrasil.opus
+4, "./videos/Bone Tea - The Suborbitals (Official Video) - The Suborbitals.m4a" || Bone Tea - The Suborbitals (Official Video) - The Suborbitals.opus
+8, "./videos/Agroto\u{301}xico - Ensaio - ＂Fim do mundo＂ - GRAVADORA TRAMA.m4a" || Agrotóxico - Ensaio - "Fim do mundo" - GRAVADORA TRAMA.opus
+4, "./videos/Bonnie Tyler - 1984 - Holding Out For A Hero - Single Version - Jan Knudsen.m4a" || Bonnie Tyler - 1984 - Holding Out For A Hero - Single Version - Jan Knudsen.opus
+4, "./videos/Gritando HC - Velho Punk - PunkdoBrasil.m4a" || Gritando HC - Velho Punk - PunkdoBrasil.opus
+6, "./videos/Korzus em ＂Correria＂ no Estúdio Showlivre 2011 - Showlivre.m4a" || Korzus em "Correria" no Estúdio Showlivre 2011 - Showlivre.opus
+22, "./videos/Space Asshole - Chris Remo.opus" || Garota de Ipanema - Verve Records.opus
+21, "./videos/I DONT KNOW HOW BUT THEY FOUND ME - Do It All The Time - I DONT KNOW HOW BUT THEY FOUND ME.opus" || I DONT KNOW HOW BUT THEY FOUND ME - New Invention (Lyric Video) - I DONT KNOW HOW BUT THEY FOUND ME
+.opus
+4, "./videos/MANWOLVES - Georgia Peach - MANWOLVES.m4a" || MANWOLVES - Georgia Peach - MANWOLVES.opus
+4, "./videos/Let\'s Forget It For Awhile (Official Video) - The Suborbitals.m4a" || Let's Forget It For Awhile (Official Video) - The Suborbitals.opus
+10, "./videos/Wise Blood - The Suborbitals - Topic.opus" || Aquanaut - The Suborbitals - Topic.opus
+4, "./videos/The Missile Knows Where It Is... (But Not WHY It Is) - aeiou.m4a" || The Missile Knows Where It Is... (But Not WHY It Is) - aeiou.opus
+5, "./videos/Yoko Kanno + Seatbelts - ＂Tank!＂ (Full Performance) ｜ Cowboy Bebop： Unlocked ｜ Netflix Geeked - Still Watching Netflix.opus" || Yoko Kanno + Seatbelts - "Tank!" (Full Performance) | Cowboy Bebop:
+ Unlocked | Netflix Geeked - Still Watching Netflix.opus
+3, "./videos/What\'s Gonna Happen (From ＂Tootsie＂ Original Broadway Cast Recording ⧸ Audio) - TootsieMusicalVEVO.opus" || What's Gonna Happen (From "Tootsie" Original Broadway Cast Recording / Audio) - TootsieMu
+sicalVEVO.opus
+3, "./videos/VULFPECK ⧸⧸⧸ Fugue State - Vulf.opus" || VULFPECK /// Fugue State - Vulf.opus
+4, "./videos/Lindsay Mendez ｜ ＂The Ballad of Sara Berry＂ (Ryan Scott Oliver Song) ｜ NewMusicalTheatre - NewMusicalTheatre.opus" || Lindsay Mendez | "The Ballad of Sara Berry" (Ryan Scott Oliver Song) | NewMusi
+calTheatre - NewMusicalTheatre.opus
+6, "./videos/Team Starkid- Not Over Yet, Kick It Up A Notch, Rogues Are We, (Reprise)- 6⧸10⧸12 NYC - LindaDAKL18203.m4a" || Team Starkid- Not Over Yet, Kick It Up A Notch, Rogues Are We, (Reprise)- 6/10/12 NYC - L
+indaDAKL18203.opus
+4, "./videos/Brian d\'Arcy James & John Cariani Sing God, I Hate Shakespeare - bookchickdi.m4a" || Brian d'Arcy James & John Cariani Sing God, I Hate Shakespeare - bookchickdi.opus
+5, "./videos/Music Video： ＂Hard to Be the Bard＂ Starring Christian Borle from ＂Something Rotten!＂ - Broadwaycom.opus" || Music Video: "Hard to Be the Bard" Starring Christian Borle from "Something Rotten!" - Broadwaycom.opus
+4, "./videos/Team Starkid   Kick it up a Notch - zeddscat.m4a" || Team Starkid   Kick it up a Notch - zeddscat.opus
+4, "./videos/＂Wedding Song＂ - Reeve Carney & Eva Noblezada ｜ Hadestown ｜ Broadway in Bryant Park 2022 - Philip Romano.opus" || "Wedding Song" - Reeve Carney & Eva Noblezada | Hadestown | Broadway in Bryant Park 2022 - Philip Romano.opus
+4, "./videos/Amber Gray Final ＂We Raise Our Cups＂ Hadestown Curtain Call 02⧸19⧸2022 - bwaySHO.opus" || Amber Gray Final "We Raise Our Cups" Hadestown Curtain Call 02/19/2022 - bwaySHO.opus
+4, "./videos/afternoon • so mean (ft. mxmtoon, samsa & love-sadkid) (lyrics) - miukie.m4a" || afternoon • so mean (ft. mxmtoon, samsa & love-sadkid) (lyrics) - miukie.opus
+4, "./videos/you\'ll say sorry through your smile - samsa.m4a" || you'll say sorry through your smile - samsa.opus
+6, "./videos/Ratos de Porão em ＂Aids, pop, repressão＂ no Estúdio Showlivre 2011 - Showlivre.m4a" || Ratos de Porão em "Aids, pop, repressão" no Estúdio Showlivre 2011 - Showlivre.opus
+20, "./videos/There\'s No Love in February ✨ The Orion Experience - TheOrionExperience.opus" || The Queen of White Lies ✨ The Orion Experience - TheOrionExperience.opus
+20, "./videos/There\'s No Love in February ✨ The Orion Experience - TheOrionExperience.opus" || The Cult of Dionysus ✨ The Orion Experience - TheOrionExperience.opus
+22, "./videos/There\'s No Love in February ✨ The Orion Experience - TheOrionExperience.opus" || Obsessed With You ✨ The Orion Experience - TheOrionExperience.opus
+18, "./videos/There\'s No Love in February ✨ The Orion Experience - TheOrionExperience.opus" || I Love the Stars ✨ The Orion Experience - TheOrionExperience.opus
+23, "./videos/There\'s No Love in February ✨ The Orion Experience - TheOrionExperience.opus" || Like Sexy Dynamite ✨ The Orion Experience - TheOrionExperience.opus
+29, "./videos/Wrecking Ball ✨ The Orion Experience ❤\u{fe0f} Mother Mother - TheOrionExperience.opus" || We Are the Ones ✨ The Orion Experience - TheOrionExperience.opus
+40, "./videos/The Coldest Goodbye - Tin Can Bros - Topic.opus" || The Blood (Live) - Bethel Music, David Funk - Bethel Music.opus
+30, "./videos/Wrecking Ball ✨ The Orion Experience ❤\u{fe0f} Mother Mother - TheOrionExperience.opus" || All Dolled Up ✨ The Orion Experience - TheOrionExperience.opus
+29, "./videos/Wrecking Ball ✨ The Orion Experience ❤\u{fe0f} Mother Mother - TheOrionExperience.opus" || Night Eyes ✨ The Orion Experience - TheOrionExperience.opus
+29, "./videos/Wrecking Ball ✨ The Orion Experience ❤\u{fe0f} Mother Mother - TheOrionExperience.opus" || Vampire ✨ The Orion Experience - TheOrionExperience.opus
+29, "./videos/Wrecking Ball ✨ The Orion Experience ❤\u{fe0f} Mother Mother - TheOrionExperience.opus" || S.T.A.R. Child ✨ The Orion Experience - TheOrionExperience.opus
+20, "./videos/How Long？ - Amber Gray - Topic.opus" || Doubt Comes In - Reeve Carney - Topic.opus
+20, "./videos/Charming - Amber Gray - Topic.opus" || Ramen King - I Fucked a Turkey - Topic.opus
+5, "./videos/Cynthia Erivo： Someone Else\'s Story (2014) - TheMusicalTheatre.m4a" || Cynthia Erivo: Someone Else's Story (2014) - TheMusicalTheatre.opus
+4, "./videos/Checkers Part 6 of 16 - Grand Raconteur.m4a" || Checkers Part 6 of 16 - Grand Raconteur.opus
+4, "./videos/Elaine Paige and Tommy Korberg -Mountain Duet - Chess in Concert 1984 - operathephantom.m4a" || Elaine Paige and Tommy Korberg -Mountain Duet - Chess in Concert 1984 - operathephantom.opus
+20, "./videos/Meu Igual - Cólera - Topic.opus" || Electric to Inept - Madde - Topic.opus
+22, "./videos/Heaven - Shihoko Hirata - Topic.opus" || Madde - What Is My Name - Madde.opus
+43, "./videos/Vundabar - ＂Alien Blues＂ (Official Video) - Vundabar.opus" || Joey Valence & Brae - HOOLIGANG (Official Video) - Joey Valence & Brae.opus
+21, "./videos/Meu Igual - Cólera - Topic.opus" || Wet - dazey and the scouts - Topic.opus
+42, "./videos/Pixies - Where Is My Mind？ (Official Lyric Video) - PixiesOfficial.opus" || Rare Americans - Brittle Bones Nicky (Official Music Video) - Rare Americans.opus
+41, "./videos/CarolineCarr ＂The Devil\'s Mind＂ Official Video - Caroline Carr.opus" || Rare Americans - Brittle Bones Nicky 2 (Official Video) - Rare Americans.opus
+34, "./videos/Smash Mouth - All Star (Official Music Video) - SMASH MOUTH.opus" || Rare Americans - Baggage (Official Music Video) - Rare Americans.opus
+4, "./videos/Agressa\u{303}o Repressa\u{303}o - Aaron Rattus.opus" || Agressão Repressão - Aaron Rattus.opus
