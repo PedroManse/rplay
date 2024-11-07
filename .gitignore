@@ -1,6 +1,5 @@
 target
 .env
 *.json
-*.opus
-videos
 yt-dlp_linux
+*.sqlite3
