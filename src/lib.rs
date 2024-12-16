@@ -1,5 +1,6 @@
 pub mod query;
-pub use query::query;
+pub mod deezer;
+pub mod db;
 pub use std::path::PathBuf;
 
 #[derive(thiserror::Error, Debug)]
@@ -18,47 +19,11 @@ pub enum Error {
     SqlError(#[from] sqlx::Error),
 }
 
-
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-pub struct InsertTrack {
-    pub name: String,
-    pub artist_id: u32,
-    pub duration: Option<u32>,
-    pub album: Option<String>,
-
-    pub deezer_id: Option<u32>,
-    //pub youtube_id: Option<String>,
-    //pub spotify_id: Option<String>,
-}
-
-
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-pub struct InsertArtist {
-    pub deezer_id: u32,
-    pub name: String,
-}
-
-
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-pub struct InsertInfo {
-    pub tracks: Vec<InsertTrack>,
-    pub artists: Vec<InsertArtist>,
-}
-
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
 pub struct VideoQuery {
     pub name: String,
     pub by: String,
     pub id: String,
 }
-
-//#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-//pub struct DownloadedVideo {
-//    pub id: String,
-//    pub by: String,
-//    pub name: String,
-//    pub path: PathBuf,
-//}
 
 fn min3<T: Ord>(a: T, b: T, c: T) -> T {
     std::cmp::min(std::cmp::min(a, b), c)

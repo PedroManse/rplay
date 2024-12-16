@@ -2,9 +2,7 @@ CREATE TABLE artist (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name TEXT NOT NULL UNIQUE,
 
-	youtube_name TEXT UNIQUE,
-	deezer_id INTEGER UNIQUE,
-	spotify_id INTEGER UNIQUE
+	deezer_id INTEGER UNIQUE
 );
 
 CREATE TABLE track (
@@ -12,18 +10,22 @@ CREATE TABLE track (
 	path TEXT UNIQUE,
 	name TEXT NOT NULL,
 	artist_id INTEGER NOT NULL REFERENCES artist(id),
+	album_id INTEGER NOT NULL REFERENCES album(id),
 	duration INTEGER NOT NULL,
-	album TEXT,
 
-	deezer_id INTEGER UNIQUE,
-	youtube_id TEXT UNIQUE,
-	spotify_id INTEGER UNIQUE
+	deezer_id INTEGER UNIQUE
+);
+
+CREATE TABLE album (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT NOT NULL,
+	artist_id INTEGER NOT NULL REFERENCES artist(id),
+
+	deezer_id INTEGER UNIQUE
 );
 
 CREATE TABLE playlist (
 	name TEXT NOT NULL UNIQUE,
-
-	youtube_name TEXT,
 	deezer_id INTEGER
 );
 

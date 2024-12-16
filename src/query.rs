@@ -36,4 +36,3 @@ fn extract(info: String) -> Vec<VideoQuery> {
 pub async fn query(query: &str) -> Result<Vec<VideoQuery>, Error> {
     get_ytinfo(query).await.map(extract)
 }
-
