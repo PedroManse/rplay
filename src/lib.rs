@@ -1,6 +1,6 @@
-pub mod query;
 pub mod deezer;
 pub mod db;
+use db::DBCon;
 pub use std::path::PathBuf;
 
 #[derive(thiserror::Error, Debug)]
@@ -17,12 +17,6 @@ pub enum Error {
     JsonError(#[from] serde_json::Error),
     #[error(transparent)]
     SqlError(#[from] sqlx::Error),
-}
-
-pub struct VideoQuery {
-    pub name: String,
-    pub by: String,
-    pub id: String,
 }
 
 fn min3<T: Ord>(a: T, b: T, c: T) -> T {
@@ -59,4 +53,24 @@ pub fn lev(s0: &str, s1: &str) -> usize {
     }
 
     row[len_1]
+}
+
+#[macro_export]
+macro_rules! col {
+    ($r:literal $g:literal $b:literal) => {
+        format!("ESC[38;2;{};{};{}m", $r, $g, $b)
+    };
+    (Black) => { "\x1b[30m" };
+    (Red) => { "\x1b[31m" };
+    (Green) => { "\x1b[32m" };
+    (Yellow) => { "\x1b[33m" };
+    (Blue) => { "\x1b[34m" };
+    (Magenta) => { "\x1b[35m" };
+    (Cyan) => { "\x1b[36m" };
+    (White) => { "\x1b[37m" };
+    (Reset) => { "\x1b[0m" };
+    (Grey) => { "\x1b[37;2m" };
+    ($c:tt $tx:expr) => {
+        format!("{}{}{}", col!($c), $tx, col!(Reset),)
+    };
 }

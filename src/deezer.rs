@@ -30,8 +30,6 @@ pub struct Album {
     pub title: String,
 }
 
-type DBCon = sqlx::SqliteConnection;
-
 impl Album {
     pub async fn upsert(&self, artist_id: i64, con: &mut DBCon) -> Result<i64, Error> {
         sqlx::query!(
@@ -105,7 +103,7 @@ pub async fn get_liked(user_id: i64) -> Result<Vec<Track>, Error> {
     Ok(cont.data)
 }
 
-struct DownloadTrack {
+pub struct DownloadTrack {
     pub id: i64,
     pub path: std::path::PathBuf,
 }
