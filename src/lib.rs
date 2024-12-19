@@ -74,3 +74,18 @@ macro_rules! col {
         format!("{}{}{}", col!($c), $tx, col!(Reset),)
     };
 }
+
+fn replace_fs_chars(text: &str) -> String {
+    text.replace("|", "/")
+}
+
+
+fn make_track_path(music_dir: &str, track_name: &str, track_id: i64) -> PathBuf {
+    [
+        music_dir,
+        ".downloaded",
+        &format!("{}.{}.mp3", replace_fs_chars(track_name), track_id),
+    ]
+    .iter()
+    .collect()
+}

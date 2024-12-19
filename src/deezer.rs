@@ -103,6 +103,57 @@ pub async fn get_liked(user_id: i64) -> Result<Vec<Track>, Error> {
     Ok(cont.data)
 }
 
+#[derive(serde::Deserialize, Debug)]
+pub struct PlaylistInfo {
+    pub id: i64,
+    pub title: String,
+    pub duration: i64,
+}
+
+pub async fn get_playlists(user_id: i64) -> Result<Vec<PlaylistInfo>, Error> {
+    let cont: Paginate<PlaylistInfo> = reqwest::get(format!(
+        "https://api.deezer.com/user/{user_id}/playlists?limit=-1"
+    ))
+        .await?
+        .json()
+        .await?;
+    Ok(cont.data)
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct APIPlaylistTracks {
+    data: Vec<Track>,
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct APIPlaylist {
+    id: i64,
+    title: String,
+    tracks: APIPlaylistTracks,
+}
+
+#[derive(Debug)]
+pub struct Playlist {
+    pub id: i64,
+    pub title: String,
+    pub tracks: Vec<Track>,
+}
+
+pub async fn get_playlist_tracks(platlist_id: i64) -> Result<Playlist, Error> {
+    let cont: APIPlaylist = reqwest::get(format!(
+        "https://api.deezer.com/playlist/{platlist_id}?limit=-1"
+    ))
+        .await?
+        .json()
+        .await?;
+    Ok(Playlist {
+        id: cont.id,
+        title: cont.title,
+        tracks: cont.tracks.data,
+    })
+
+}
+
 pub struct DownloadTrack {
     pub id: i64,
     pub path: std::path::PathBuf,
@@ -118,3 +169,4 @@ pub async fn download_tracks(tracks: impl Iterator<Item = DownloadTrack>) -> Res
     }
     Ok(())
 }
+
