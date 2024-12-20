@@ -1,6 +1,8 @@
 pub mod query;
 pub mod deezer;
 pub mod db;
+pub mod download;
+pub use download::Downloader;
 pub use std::path::PathBuf;
 
 #[derive(thiserror::Error, Debug)]
@@ -17,6 +19,8 @@ pub enum Error {
     JsonError(#[from] serde_json::Error),
     #[error(transparent)]
     SqlError(#[from] sqlx::Error),
+    #[error(transparent)]
+    AnyhowError(#[from] Box<dyn std::error::Error>),
 }
 
 pub struct VideoQuery {

@@ -83,15 +83,25 @@ impl Track {
     pub async fn upsert(&self, con: &mut DBCon) -> Result<i64, Error> {
         let artist_id = self.artist.upsert(con).await?;
         let album_id = self.album.upsert(artist_id, con).await?;
-        sqlx::query!("
+        sqlx::query!(
+            "
 INSERT INTO track
     (name, artist_id, duration, album_id, deezer_id)
 VALUES (?, ?, ?, ?, ?)
 ON CONFLICT DO UPDATE set deezer_id=?
 RETURNING id
-", self.title, artist_id, self.duration, album_id, self.id, self.id).fetch_one(con).await
-            .map_err(Error::from)
-            .map(|s|s.id)
+",
+            self.title,
+            artist_id,
+            self.duration,
+            album_id,
+            self.id,
+            self.id
+        )
+        .fetch_one(con)
+        .await
+        .map_err(Error::from)
+        .map(|s| s.id)
     }
 }
 
@@ -105,9 +115,33 @@ pub async fn get_liked(user_id: i64) -> Result<Vec<Track>, Error> {
     Ok(cont.data)
 }
 
-struct DownloadTrack {
+pub struct DownloadTrack {
     pub id: i64,
     pub path: std::path::PathBuf,
+}
+
+use deezer_downloader::downloader as deezer_dl;
+pub struct DeezerDownloader(deezer_dl::Downloader);
+impl DeezerDownloader {
+    pub async fn new() -> Result<Self, Error> {
+        deezer_dl::Downloader::new()
+            .await
+            .map(DeezerDownloader)
+            .map_err(Error::from)
+    }
+}
+
+impl crate::download::Downloader for DeezerDownloader {
+    type SongId = u64;
+    async fn download(
+        &mut self,
+        song_id: u64,
+        file_path: impl AsRef<std::path::Path>,
+    ) -> Result<(), Error> {
+        let song = self.0.download_song(song_id).await?;
+        song.write_to_file(file_path)?;
+        Ok(())
+    }
 }
 
 pub async fn download_tracks(tracks: impl Iterator<Item = DownloadTrack>) -> Result<(), Error> {
