@@ -95,7 +95,7 @@ RETURNING id
 
 pub async fn get_liked(user_id: i64) -> Result<Vec<Track>, Error> {
     let cont: Paginate<Track> = reqwest::get(format!(
-        "https://api.deezer.com/user/{user_id}/tracks?limit=999"
+        "https://api.deezer.com/user/{user_id}/tracks?limit=-1"
     ))
     .await?
     .json()
@@ -154,19 +154,41 @@ pub async fn get_playlist_tracks(platlist_id: i64) -> Result<Playlist, Error> {
 
 }
 
-pub struct DownloadTrack {
-    pub id: i64,
+#[derive(Debug)]
+pub struct DownloadRequest {
+    pub deezer_id: i64,
+    pub db_id: i64,
+}
+
+#[derive(Debug)]
+pub struct DownloadedTrack {
+    pub db_id: i64,
+    pub deezer_id: i64,
     pub path: std::path::PathBuf,
 }
 
-pub async fn download_tracks(tracks: impl Iterator<Item = DownloadTrack>) -> Result<(), Error> {
-    let mut dl = deezer_downloader::downloader::Downloader::new()
-        .await
-        .unwrap();
-    for track in tracks {
-        let song = dl.download_song(track.id as u64).await.unwrap();
-        song.write_to_file(track.path).unwrap();
-    }
-    Ok(())
+pub async fn download_tracks(
+    deezer_arl: &str,
+    download_dir: &str,
+    tracks: Vec<DownloadRequest>,
+) -> Result<Vec<DownloadedTrack>, Error> {
+    // run the program deezer.py with deezer_arl and tracks in argv
+    let output = tokio::process::Command::new("python3")
+        .arg("/home/manse/code/rplay/deezer.py")
+        .env("DEEZER_ARL", deezer_arl)
+        .arg(download_dir)
+        .args(tracks.iter().map(|x| format!("{}:{}", x.deezer_id, x.db_id)))
+        .output().await?;
+    //TODO: can't make error work with thiserror :(
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    println!("{stderr:?}");
+    println!("{stdout:?}");
+    Ok(stdout.lines().map(std::path::PathBuf::from).zip(tracks).map(|(path, req)|{
+        DownloadedTrack{
+            path,
+            db_id: req.db_id,
+            deezer_id: req.deezer_id,
+        }
+    }).collect())
 }
-

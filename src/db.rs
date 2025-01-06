@@ -26,6 +26,34 @@ pub struct Album {
 // ::get_all
 // &.get_artist
 // &.get_tracks
+//
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+pub struct DBTrackInfo {
+    pub id: i64,
+    pub path: Option<String>,
+    pub name: String,
+    pub artist_id: i64,
+    pub artist_name: String,
+    pub album_id: i64,
+    pub album_name: String,
+    pub duration: i64,
+    pub deezer_id: Option<i64>,
+}
+
+//TODO deref as Track?
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+pub struct TrackInfo {
+    pub id: i64,
+    pub path: Option<std::path::PathBuf>,
+    pub name: String,
+    pub artist_id: i64,
+    pub artist_name: String,
+    pub album_id: i64,
+    pub album_name: String,
+    pub duration: i64,
+    pub deezer_id: Option<i64>,
+}
+// ::get_all
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 struct DBTrack {
@@ -36,20 +64,6 @@ struct DBTrack {
     album_id: i64,
     duration: i64,
     deezer_id: Option<i64>,
-}
-
-//TODO deref as Track?
-#[derive(Debug, Clone, Hash, Eq, PartialEq)]
-pub struct TrackInfo {
-    pub id: i64,
-    pub path: Option<String>,
-    pub name: String,
-    pub artist_id: i64,
-    pub artist_name: String,
-    pub album_id: i64,
-    pub album_name: String,
-    pub duration: i64,
-    pub deezer_id: Option<i64>,
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
@@ -63,7 +77,7 @@ pub struct Track {
     pub deezer_id: Option<i64>,
 }
 // ::new
-// ::all_tracks
+// ::get_all
 // &mut .download
 // .delete_track
 // &mut.delete_download
@@ -227,13 +241,30 @@ impl From<DBTrack> for Track {
     }
 }
 
+impl From<DBTrackInfo> for TrackInfo {
+    fn from(t: DBTrackInfo) -> TrackInfo {
+        TrackInfo {
+            id: t.id,
+            path: t.path.map(std::path::PathBuf::from),
+            name: t.name,
+            artist_id: t.artist_id,
+            artist_name: t.artist_name,
+            album_id: t.album_id,
+            album_name: t.album_name,
+            duration: t.duration,
+            deezer_id: t.deezer_id,
+        }
+    }
+}
+
+
 impl TrackInfo {
-    pub async fn get_all(db: &mut DBCon) -> Result<Vec<Self>> {
+    pub async fn get_all(db: &mut DBCon) -> Result<impl Iterator<Item=Self>> {
         sqlx::query_as!(
-            TrackInfo,
+            DBTrackInfo,
             r#"
 SELECT
-    t.id,
+    t.id as "id!",
     t.path,
     t.name,
     t.artist_id,
@@ -245,10 +276,12 @@ SELECT
 FROM track as t
 JOIN artist as a ON t.artist_id=a.id
 JOIN album as b ON t.album_id=b.id
+WHERE t.path IS NULL
 "#
         )
         .fetch_all(db)
         .await
+        .map(|s| s.into_iter().map(TrackInfo::from))
         .map_err(Error::from)
     }
 }

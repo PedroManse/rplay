@@ -17,6 +17,10 @@ pub enum Error {
     JsonError(#[from] serde_json::Error),
     #[error(transparent)]
     SqlError(#[from] sqlx::Error),
+    #[error(transparent)]
+    StrUtf8Error(std::str::Utf8Error),
+    #[error(transparent)]
+    StringUtf8Error(std::string::FromUtf8Error),
 }
 
 fn min3<T: Ord>(a: T, b: T, c: T) -> T {
