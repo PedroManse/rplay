@@ -679,5 +679,8 @@ if __name__ == "__main__":
     download_dir = args.pop(0)
     init_deezer_session(deezer_arl)
     for song_id, outid in map(lambda x:x.split(':', 1), args):
-        song_info = get_song_infos_from_deezer_website("track", song_id)
-        print(download_song(song_info, download_dir, outid))
+        try:
+            song_info = get_song_infos_from_deezer_website("track", song_id)
+            print(download_song(song_info, download_dir, outid))
+        except Exception as e:
+            print(f"failed on {song_id}:{outid} [{e}]", file=sys.stdout)

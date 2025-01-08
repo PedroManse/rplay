@@ -1,6 +1,5 @@
 pub mod deezer;
 pub mod db;
-use db::DBCon;
 pub use std::path::PathBuf;
 
 #[derive(thiserror::Error, Debug)]
