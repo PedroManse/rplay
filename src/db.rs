@@ -1,5 +1,3 @@
-//TODO remove this after making playlist methods
-#![allow(unused_variables)]
 use crate::*;
 pub type DBCon = sqlx::SqliteConnection;
 type Result<T> = std::result::Result<T, Error>;
@@ -19,7 +17,6 @@ pub struct Artist {
 pub struct Album {
     pub id: i64,
     pub name: String,
-    pub artist_id: i64,
     pub deezer_id: Option<i64>,
 }
 // ::new
@@ -161,28 +158,37 @@ impl Album {
     pub async fn new(
         db: &mut DBCon,
         name: &str,
-        artist_id: i64,
+        artist_ids: Vec<i64>,
         deezer_id: Option<i64>,
     ) -> Result<Self> {
-        sqlx::query_as!(
+        let album = sqlx::query_as!(
             Album,
             "
 INSERT INTO album
-    (name, artist_id, deezer_id)
-VALUES (?, ?, ?)
+    (name, deezer_id)
+VALUES (?, ?)
 ON CONFLICT (deezer_id)
     DO UPDATE SET deezer_id=(?)
 RETURNING
-    id, name, artist_id, deezer_id
+    id, name, deezer_id
 ",
             name,
-            artist_id,
             deezer_id,
             deezer_id,
         )
-        .fetch_one(db)
-        .await
-        .map_err(Error::from)
+        .fetch_one(&mut *db)
+        .await?;
+        for artist_id in artist_ids {
+            sqlx::query!(
+                r#"
+INSERT INTO album_contributor
+    (artist_id, album_id)
+VALUES
+    (?, ?)
+"#,
+            artist_id, album.id).execute(&mut *db).await?;
+        }
+        Ok(album)
     }
     pub async fn get_all(db: &mut DBCon) -> Result<Vec<Self>> {
         sqlx::query_as!(
@@ -196,17 +202,19 @@ FROM album
         .await
         .map_err(Error::from)
     }
-    pub async fn get_artist(&self, db: &mut DBCon) -> Result<Artist> {
+    pub async fn get_artists(&self, db: &mut DBCon) -> Result<Vec<Artist>> {
         sqlx::query_as!(
             Artist,
             r#"
-SELECT *
-FROM artist
-WHERE id=?
+SELECT a.*
+    FROM artist as a
+INNER JOIN album_contributor as ac
+    ON a.id=ac.artist_id
+WHERE ac.album_id=?;
 "#,
-            self.artist_id
+            self.id
         )
-        .fetch_one(db)
+        .fetch_all(db)
         .await
         .map_err(Error::from)
     }
@@ -257,9 +265,8 @@ impl From<DBTrackInfo> for TrackInfo {
     }
 }
 
-
 impl TrackInfo {
-    pub async fn get_all(db: &mut DBCon) -> Result<impl Iterator<Item=Self>> {
+    pub async fn get_all(db: &mut DBCon) -> Result<impl Iterator<Item = Self>> {
         sqlx::query_as!(
             DBTrackInfo,
             r#"
@@ -596,26 +603,29 @@ VALUES (?, ?)
     pub async fn remove_track(&mut self, db: &mut DBCon, track_id: i64) -> Result<()> {
         todo!()
     }
-    pub async fn get_tracks(&self, db: &mut DBCon) -> Result<impl Iterator<Item=Track>> {
-        sqlx::query_as!(DBTrack, r#"
+    pub async fn get_tracks(&self, db: &mut DBCon) -> Result<impl Iterator<Item = Track>> {
+        sqlx::query_as!(
+            DBTrack,
+            r#"
 SELECT t.* FROM track AS t INNER JOIN playlist_entry AS p ON p.track_id=t.id WHERE p.list_id=?
-"#, self.id)
+"#,
+            self.id
+        )
         .fetch_all(db)
         .await
         .map(|s| s.into_iter().map(Track::from))
         .map_err(Error::from)
     }
     pub async fn sync_fs(&self, db: &mut DBCon, music_dir: &str) -> Result<()> {
-        let playlist_path:PathBuf = [music_dir, &self.name].iter().collect();
+        let playlist_path: PathBuf = [music_dir, &self.name].iter().collect();
         std::fs::create_dir_all(&playlist_path)?;
         for track in self.get_tracks(db).await? {
             let track_path = make_track_path(music_dir, &track.name, track.id);
             if track_path.exists() {
-                let track_link_path: PathBuf = [
-                    music_dir,
-                    &self.name,
-                    &format!("{}.mp3", track.name),
-                ].iter().collect();
+                let track_link_path: PathBuf =
+                    [music_dir, &self.name, &format!("{}.mp3", track.name)]
+                        .iter()
+                        .collect();
                 std::os::unix::fs::symlink(track_path, track_link_path)?;
             }
         }
