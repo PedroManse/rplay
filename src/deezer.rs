@@ -30,69 +30,6 @@ pub struct Album {
     pub title: String,
 }
 
-impl Album {
-    pub async fn upsert(&self, artist_id: i64, con: &mut DBCon) -> Result<i64, Error> {
-        sqlx::query!(
-            "
-INSERT INTO album
-    (name, artist_id, deezer_id)
-VALUES (?, ?, ?)
-ON CONFLICT (deezer_id)
-    DO UPDATE SET deezer_id=(?)
-RETURNING
-    id
-",
-            self.title,
-            artist_id,
-            self.id,
-            self.id
-        )
-        .fetch_one(con)
-        .await
-        .map(|s| s.id)
-        .map_err(Error::from)
-    }
-}
-
-impl Artist {
-    pub async fn upsert(&self, con: &mut DBCon) -> Result<i64, Error> {
-        sqlx::query!(
-            "
-INSERT INTO artist
-    (name, deezer_id)
-VALUES (?, ?)
-ON CONFLICT (deezer_id)
-    DO UPDATE SET deezer_id=(?)
-RETURNING
-    id
-",
-            self.name,
-            self.id,
-            self.id
-        )
-        .fetch_one(con)
-        .await
-        .map(|s| s.id)
-        .map_err(Error::from)
-    }
-}
-
-impl Track {
-    pub async fn upsert(&self, con: &mut DBCon) -> Result<i64, Error> {
-        let artist_id = self.artist.upsert(con).await?;
-        let album_id = self.album.upsert(artist_id, con).await?;
-        sqlx::query!("
-INSERT INTO track
-    (name, artist_id, duration, album_id, deezer_id)
-VALUES (?, ?, ?, ?, ?)
-ON CONFLICT DO UPDATE set deezer_id=?
-RETURNING id
-", self.title, artist_id, self.duration, album_id, self.id, self.id).fetch_one(con).await
-            .map_err(Error::from)
-            .map(|s|s.id)
-    }
-}
-
 pub async fn get_liked(user_id: i64) -> Result<Vec<Track>, Error> {
     let cont: Paginate<Track> = reqwest::get(format!(
         "https://api.deezer.com/user/{user_id}/tracks?limit=-1"
