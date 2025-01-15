@@ -1,6 +1,8 @@
 pub mod deezer;
 pub mod db;
+pub mod action;
 pub use std::path::PathBuf;
+pub type DBCon = sqlx::SqliteConnection;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -20,6 +22,8 @@ pub enum Error {
     StrUtf8Error(std::str::Utf8Error),
     #[error(transparent)]
     StringUtf8Error(std::string::FromUtf8Error),
+    #[error("Failed to convert to utf8")]
+    UTF8ConversionError(std::ffi::OsString),
 }
 
 fn min3<T: Ord>(a: T, b: T, c: T) -> T {

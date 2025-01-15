@@ -1,5 +1,5 @@
 use crate::*;
-pub type DBCon = sqlx::SqliteConnection;
+use std::path::PathBuf;
 type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
@@ -41,7 +41,7 @@ pub struct DBTrackInfo {
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub struct TrackInfo {
     pub id: i64,
-    pub path: Option<std::path::PathBuf>,
+    pub path: Option<PathBuf>,
     pub name: String,
     pub artist_id: i64,
     pub artist_name: String,
@@ -66,7 +66,7 @@ struct DBTrack {
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub struct Track {
     pub id: i64,
-    pub path: Option<std::path::PathBuf>,
+    pub path: Option<PathBuf>,
     pub name: String,
     pub artist_id: i64,
     pub album_id: i64,
@@ -239,7 +239,7 @@ impl From<DBTrack> for Track {
     fn from(t: DBTrack) -> Track {
         Track {
             id: t.id,
-            path: t.path.map(std::path::PathBuf::from),
+            path: t.path.map(PathBuf::from),
             name: t.name,
             artist_id: t.artist_id,
             album_id: t.album_id,
@@ -253,7 +253,7 @@ impl From<DBTrackInfo> for TrackInfo {
     fn from(t: DBTrackInfo) -> TrackInfo {
         TrackInfo {
             id: t.id,
-            path: t.path.map(std::path::PathBuf::from),
+            path: t.path.map(PathBuf::from),
             name: t.name,
             artist_id: t.artist_id,
             artist_name: t.artist_name,
@@ -296,7 +296,7 @@ WHERE t.path IS NULL
 impl Track {
     pub async fn new(
         db: &mut DBCon,
-        name: String,
+        name: &str,
         artist_id: i64,
         duration: i64,
         album_id: i64,
@@ -367,6 +367,27 @@ FROM track
         .await
         .map(|s| s.into_iter().map(Track::from))
         .map_err(Error::from)
+    }
+
+    pub async fn attach_file(&mut self, db: &mut DBCon, path: PathBuf) -> Result<()> {
+        let utf8_path = match path.clone().into_os_string().into_string() {
+            Ok(s)=>s,
+            Err(x)=>return Err(Error::UTF8ConversionError(x)),
+        };
+        sqlx::query!(
+            "
+UPDATE track
+SET path=?
+WHERE id=?
+            ",
+            utf8_path,
+            self.id
+        )
+        .execute(db)
+        .await?;
+        self.path = Some(path);
+        Ok(())
+
     }
 
     pub async fn download(&mut self, db: &mut DBCon, music_path: &str) -> Result<()> {
