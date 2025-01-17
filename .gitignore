@@ -3,3 +3,4 @@ target
 *.json
 yt-dlp_linux
 *.sqlite3
+.direnv
