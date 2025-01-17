@@ -211,12 +211,9 @@ pub async fn get_album(album_id: i64) -> Result<Album, Error> {
 }
 
 pub async fn get_track(track_id: i64) -> Result<Track, Error> {
-    let x = reqwest::get(format!("https://api.deezer.com/track/{track_id}"))
+    reqwest::get(format!("https://api.deezer.com/track/{track_id}"))
         .await?
-        .text()
-        .await?;
-    match serde_json::from_str(&x) {
-        Ok(j)=>Ok(j),
-        Err(_)=>Err(Error::DeezerError(x)),
-    }
+        .json()
+        .await
+        .map_err(Error::from)
 }
