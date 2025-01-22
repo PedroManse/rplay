@@ -667,7 +667,24 @@ VALUES (?, ?)
         Ok(())
     }
     pub async fn remove_track(&mut self, db: &mut DBCon, track_id: i64) -> Result<()> {
-        todo!()
+        let pos = self.tracks.iter().position(|t| *t == track_id).ok_or(
+            Error::TrackNotFoundInPlaylist {
+                playlist_id: self.id,
+                track_id,
+            },
+        )?;
+        self.tracks.swap_remove(pos);
+        sqlx::query!(
+            r#"
+DELETE FROM playlist_entry
+WHERE list_id=? AND track_id=?
+            "#,
+            self.id,
+            track_id
+        )
+        .execute(db)
+        .await?;
+        Ok(())
     }
     pub async fn get_tracks(&self, db: &mut DBCon) -> Result<impl Iterator<Item = Track>> {
         sqlx::query_as!(
