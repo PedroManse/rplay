@@ -24,6 +24,8 @@ pub enum Error {
     StringUtf8Error(std::string::FromUtf8Error),
     #[error("Failed to convert to utf8")]
     UTF8ConversionError(std::ffi::OsString),
+    #[error("Track #{track_id} not found in playlist #{playlist_id}")]
+    TrackNotFoundInPlaylist{playlist_id: i64, track_id: i64},
 }
 
 fn min3<T: Ord>(a: T, b: T, c: T) -> T {
