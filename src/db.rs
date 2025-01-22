@@ -14,16 +14,24 @@ pub struct Artist {
 // &.get_tracks
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
+pub struct DBAlbumInfo {
+    pub id: i64,
+    pub name: String,
+    pub deezer_id: Option<i64>,
+}
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub struct Album {
     pub id: i64,
     pub name: String,
     pub deezer_id: Option<i64>,
+    pub contributors: Vec<i64>,
 }
 // ::new
 // ::get_all
 // &.get_artist
 // &.get_tracks
-//
+
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub struct DBTrackInfo {
     pub id: i64,
@@ -37,7 +45,6 @@ pub struct DBTrackInfo {
     pub deezer_id: Option<i64>,
 }
 
-//TODO deref as Track?
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub struct TrackInfo {
     pub id: i64,
@@ -154,6 +161,30 @@ WHERE artist_id=?
     }
 }
 
+impl DBAlbumInfo {
+    pub async fn into_album(self, db: &mut DBCon) -> Result<Album> {
+        let artist_ids = sqlx::query!(
+            r#"
+SELECT artist_id
+FROM album_contributor
+WHERE album_id=?
+            "#,
+            self.id
+        )
+        .fetch_all(&mut *db)
+        .await?
+        .into_iter()
+        .map(|a| a.artist_id)
+        .collect();
+        Ok(Album {
+            id: self.id,
+            name: self.name,
+            deezer_id: self.deezer_id,
+            contributors: artist_ids,
+        })
+    }
+}
+
 impl Album {
     pub async fn new(
         db: &mut DBCon,
@@ -162,7 +193,7 @@ impl Album {
         deezer_id: Option<i64>,
     ) -> Result<Self> {
         let album = sqlx::query_as!(
-            Album,
+            DBAlbumInfo,
             "
 INSERT INTO album
     (name, deezer_id)
@@ -178,7 +209,7 @@ RETURNING
         )
         .fetch_one(&mut *db)
         .await?;
-        for artist_id in artist_ids {
+        for artist_id in &artist_ids {
             sqlx::query!(
                 r#"
 INSERT INTO album_contributor
@@ -186,21 +217,34 @@ INSERT INTO album_contributor
 VALUES
     (?, ?)
 "#,
-            artist_id, album.id).execute(&mut *db).await?;
+                artist_id,
+                album.id
+            )
+            .execute(&mut *db)
+            .await?;
         }
-        Ok(album)
+        Ok(Album {
+            id: album.id,
+            name: album.name,
+            deezer_id: album.deezer_id,
+            contributors: artist_ids,
+        })
     }
     pub async fn get_all(db: &mut DBCon) -> Result<Vec<Self>> {
-        sqlx::query_as!(
-            Album,
+        let album_infos = sqlx::query_as!(
+            DBAlbumInfo,
             r#"
 SELECT *
 FROM album
             "#
         )
-        .fetch_all(db)
-        .await
-        .map_err(Error::from)
+        .fetch_all(&mut *db)
+        .await?;
+        let mut albums = Vec::with_capacity(album_infos.len());
+        for album_info in album_infos {
+            albums.push(album_info.into_album(&mut *db).await?);
+        }
+        Ok(albums)
     }
     pub async fn get_artists(&self, db: &mut DBCon) -> Result<Vec<Artist>> {
         sqlx::query_as!(
@@ -371,8 +415,8 @@ FROM track
 
     pub async fn attach_file(&mut self, db: &mut DBCon, path: PathBuf) -> Result<()> {
         let utf8_path = match path.clone().into_os_string().into_string() {
-            Ok(s)=>s,
-            Err(x)=>return Err(Error::UTF8ConversionError(x)),
+            Ok(s) => s,
+            Err(x) => return Err(Error::UTF8ConversionError(x)),
         };
         sqlx::query!(
             "
@@ -387,7 +431,6 @@ WHERE id=?
         .await?;
         self.path = Some(path);
         Ok(())
-
     }
 
     pub async fn download(&mut self, db: &mut DBCon, music_path: &str) -> Result<()> {
@@ -493,7 +536,7 @@ WHERE track_id=?
     }
     pub async fn get_album(&self, db: &mut DBCon) -> Result<Album> {
         sqlx::query_as!(
-            Album,
+            DBAlbumInfo,
             r#"
 SELECT *
 FROM album
@@ -501,7 +544,9 @@ WHERE id=?
             "#,
             self.album_id
         )
-        .fetch_one(db)
+        .fetch_one(&mut *db)
+        .await?
+        .into_album(&mut *db)
         .await
         .map_err(Error::from)
     }
