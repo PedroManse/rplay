@@ -1,5 +1,6 @@
 pub mod deezer;
 pub mod db;
+pub mod download;
 pub mod action;
 pub use std::path::PathBuf;
 pub type DBCon = sqlx::SqliteConnection;
