@@ -7,18 +7,17 @@ pub struct DataVec<T> {
 }
 
 impl<T> std::ops::Deref for DataVec<T> {
-    type Target=Vec<T>;
+    type Target = Vec<T>;
     fn deref(&self) -> &Vec<T> {
         &self.data
     }
 }
 
-impl<T> From<DataVec<T>> for Vec<T>{
+impl<T> From<DataVec<T>> for Vec<T> {
     fn from(p: DataVec<T>) -> Vec<T> {
         p.data
     }
 }
-
 
 #[derive(serde::Deserialize, Debug)]
 pub struct Track {
@@ -62,26 +61,21 @@ pub struct PlaylistInfo {
     pub duration: i64,
 }
 
-pub async fn get_playlists(user_id: i64) -> Result<Vec<PlaylistInfo>, Error> {
+pub async fn get_user_playlists(user_id: i64) -> Result<Vec<PlaylistInfo>, Error> {
     let cont: DataVec<PlaylistInfo> = reqwest::get(format!(
         "https://api.deezer.com/user/{user_id}/playlists?limit=-1"
     ))
-        .await?
-        .json()
-        .await?;
+    .await?
+    .json()
+    .await?;
     Ok(cont.data)
-}
-
-#[derive(serde::Deserialize, Debug)]
-struct APIPlaylistTracks {
-    data: Vec<Track>,
 }
 
 #[derive(serde::Deserialize, Debug)]
 struct APIPlaylist {
     id: i64,
     title: String,
-    tracks: APIPlaylistTracks,
+    tracks: DataVec<Track>,
 }
 
 #[derive(Debug)]
@@ -95,15 +89,14 @@ pub async fn get_playlist_tracks(platlist_id: i64) -> Result<Playlist, Error> {
     let cont: APIPlaylist = reqwest::get(format!(
         "https://api.deezer.com/playlist/{platlist_id}?limit=-1"
     ))
-        .await?
-        .json()
-        .await?;
+    .await?
+    .json()
+    .await?;
     Ok(Playlist {
         id: cont.id,
         title: cont.title,
         tracks: cont.tracks.data,
     })
-
 }
 
 #[derive(Debug)]
@@ -129,20 +122,28 @@ pub async fn download_tracks(
         .arg("/home/manse/code/rplay/deezer.py")
         .env("DEEZER_ARL", deezer_arl)
         .arg(download_dir)
-        .args(tracks.iter().map(|x| format!("{}:{}", x.deezer_id, x.db_id)))
-        .output().await?;
+        .args(
+            tracks
+                .iter()
+                .map(|x| format!("{}:{}", x.deezer_id, x.db_id)),
+        )
+        .output()
+        .await?;
     //TODO: can't make error work with thiserror :(
     let stdout = String::from_utf8(output.stdout).unwrap();
     let stderr = String::from_utf8(output.stderr).unwrap();
     println!("{stderr:?}");
     println!("{stdout:?}");
-    Ok(stdout.lines().map(std::path::PathBuf::from).zip(tracks).map(|(path, req)|{
-        DownloadedTrack{
+    Ok(stdout
+        .lines()
+        .map(std::path::PathBuf::from)
+        .zip(tracks)
+        .map(|(path, req)| DownloadedTrack {
             path,
             db_id: req.db_id,
             deezer_id: req.deezer_id,
-        }
-    }).collect())
+        })
+        .collect())
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -162,7 +163,7 @@ pub struct Contributor {
 
 impl From<Contributor> for ArtistRef {
     fn from(c: Contributor) -> ArtistRef {
-        ArtistRef{
+        ArtistRef {
             id: c.id,
             name: c.name,
         }
@@ -202,12 +203,19 @@ pub struct Album {
 }
 
 pub async fn get_album(album_id: i64) -> Result<Album, Error> {
-    reqwest::get(format!(
-        "https://api.deezer.com/album/{album_id}"
-    ))
-    .await?
-    .json()
-    .await.map_err(Error::from)
+    reqwest::get(format!("https://api.deezer.com/album/{album_id}"))
+        .await?
+        .json()
+        .await
+        .map_err(Error::from)
+}
+
+pub async fn get_track(track_id: i64) -> Result<Track, Error> {
+    reqwest::get(format!("https://api.deezer.com/track/{track_id}"))
+        .await?
+        .json()
+        .await
+        .map_err(Error::from)
 }
 
 pub async fn get_track(track_id: i64) -> Result<Track, Error> {
