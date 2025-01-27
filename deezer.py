@@ -616,6 +616,11 @@ def get_deezer_favorites(user_id: str) -> Optional[Sequence[int]]:
     return songs
 
 
+# USER
+# . OPTIONS
+# . . web_sound_quality
+# . . license_token
+
 def get_user_data():
     global license_token
     global web_sound_quality
@@ -673,14 +678,33 @@ def get_song_url(song, i=0):
         print("get song url is not working anymore.")
         return song, False, "mp3"
 
+
+def test_deezer_login():
+    print("Let's check if the deezer login is still working")
+    try:
+        song = get_song_infos_from_deezer_website(TYPE_TRACK, "917265")
+    except (Deezer403Exception, Deezer404Exception) as msg:
+        print(msg)
+        print("Login is not working anymore.")
+        return False
+
+    if song:
+        print("Login is still working.")
+        return True
+    else:
+        print("Login is not working anymore.")
+        return False
+
 if __name__ == "__main__":
-    args = sys.argv[1:]
     deezer_arl = environ["DEEZER_ARL"]
-    download_dir = args.pop(0)
     init_deezer_session(deezer_arl)
-    for song_id, outid in map(lambda x:x.split(':', 1), args):
-        try:
-            song_info = get_song_infos_from_deezer_website("track", song_id)
-            print(download_song(song_info, download_dir, outid))
-        except Exception as e:
-            print(f"failed on {song_id}:{outid} [{e}]", file=sys.stdout)
+    test_deezer_login()
+
+    #args = sys.argv[1:]
+    #download_dir = args.pop(0)
+    #for song_id, outid in map(lambda x:x.split(':', 1), args):
+    #    try:
+    #        song_info = get_song_infos_from_deezer_website("track", song_id)
+    #        print(download_song(song_info, download_dir, outid))
+    #    except Exception as e:
+    #        print(f"failed on {song_id}:{outid} [{e}]", file=sys.stdout)

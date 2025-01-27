@@ -27,6 +27,8 @@ pub enum Error {
     UTF8ConversionError(std::ffi::OsString),
     #[error("Track #{track_id} not found in playlist #{playlist_id}")]
     TrackNotFoundInPlaylist{playlist_id: i64, track_id: i64},
+    #[error(transparent)]
+    DeezerDownloadError(#[from] download::deezer::Error),
 }
 
 fn min3<T: Ord>(a: T, b: T, c: T) -> T {
